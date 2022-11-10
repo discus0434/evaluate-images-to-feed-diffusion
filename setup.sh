@@ -1,7 +1,3 @@
-conda activate
-conda env create -f environment.yaml
-conda activate sd
-
 cd src
 git clone https://github.com/CompVis/latent-diffusion.git
 
