@@ -1,3 +1,6 @@
+conda run -n sd pip install -e git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers
+conda run -n sd pip install -e git+https://github.com/openai/CLIP.git@main#egg=clip
+
 conda run -n sd pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 \
     -f https://download.pytorch.org/whl/cu113/torch_stable.html
 
