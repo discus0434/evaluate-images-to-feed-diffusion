@@ -1,0 +1,14 @@
+models/focal
+processed/
+
+*.png
+*.jpg
+*.jpeg
+
+__pycache__/
+*.py[cod]
+
+.DS_Store
+
+*.pth
+*.ckpt
