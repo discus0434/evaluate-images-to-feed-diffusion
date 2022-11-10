@@ -15,7 +15,7 @@ A small notebook to:
 1. Just build `Dockerfile`.
 
 ```bash
-docker build evaluate_images -t eval_images
+docker build . -t eval_images
 ```
 
 2. Then, run.
