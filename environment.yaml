@@ -192,7 +192,5 @@ dependencies:
     - yapf==0.32.0
     - yarl==1.8.1
     - zipp==3.8.1
-    - -f https://download.pytorch.org/whl/cu113/torch_stable.html torch==1.12.1+cu113
-    - -f https://download.pytorch.org/whl/cu113/torch_stable.html torchvision==0.13.1+cu113
     - -e git+https://github.com/CompVis/taming-transformers.git@master#egg=taming-transformers
     - -e git+https://github.com/openai/CLIP.git@main#egg=clip
