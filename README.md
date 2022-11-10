@@ -1,6 +1,6 @@
 # Evaluate Images to Feed Diffusion
 
-## TL;DR
+## Simple Description
 
 A small notebook to:
 
