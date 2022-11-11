@@ -12,6 +12,5 @@ conda run -n sd pip install -e taming-transformers/.
 git clone https://github.com/CompVis/latent-diffusion.git
 conda run -n sd pip install -e latent-diffusion/.
 
-cd ..
-wget -O ./model/waifu-diffusion-v1-4/kl-f8-anime2.ckpt \
+wget -O /evaluate-images-to-feed-diffusion/model/waifu-diffusion-v1-4/kl-f8-anime2.ckpt \
     https://huggingface.co/hakurei/waifu-diffusion-v1-4/resolve/main/vae/kl-f8-anime2.ckpt
