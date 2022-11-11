@@ -78,7 +78,7 @@ class VAEHandler:
         """Reconstruct image from latent tensor."""
         return self.vae.decode(z)
 
-    def calc_loss(self, dataset: DataLoader) -> InferrenceResult:
+    def get_loss_results(self, dataset: DataLoader) -> InferrenceResult:
         """Calc loss from image."""
 
         original = []
@@ -98,19 +98,16 @@ class VAEHandler:
                 z_ = posteriors.sample()
                 reconstructions = self.vae.decode(z_)
 
-                loss, _ = self.vae.loss(
-                    inputs=inputs,
-                    reconstructions=reconstructions,
-                    posteriors=posteriors,
-                    optimizer_idx=0,
-                    global_step=0,
-                    last_layer=self.vae.get_last_layer(),
-                )
+                inputs = inputs.cpu().detach().numpy()
+                z_ = z_.cpu().detach().numpy()
+                reconstructions = reconstructions.cpu().detach().numpy()
 
-                original.append(inputs.cpu().detach().numpy())
-                z.append(z_.cpu().detach().numpy())
-                rec.append(reconstructions.cpu().detach().numpy())
-                losses.append(loss.detach().numpy())
+                loss = self.calc_max_recon_loss_per_chunk(inputs, reconstructions)
+
+                original.append(inputs)
+                z.append(z_)
+                rec.append(reconstructions)
+                losses.append(loss)
 
                 idx += 1
 
@@ -123,6 +120,24 @@ class VAEHandler:
 
         return res
 
+    def calc_max_recon_loss_per_chunk(
+        self,
+        inputs: np.ndarray,
+        reconstructions: np.ndarray,
+        rows: int = 8,
+        cols: int = 8,
+    ) -> np.ndarray:
+        """Calculate reconstruction losses per a chunk,
+        then return maximum of them.
+        """
+        orig, rec = denormalize(np.concatenate([inputs, reconstructions]))
+
+        loss = []
+        for row_orig, row_rec in zip(np.array_split(orig, rows, axis=0), np.array_split(rec, rows, axis=0)):
+            for chunk_orig, chunk_rec in zip(np.array_split(row_orig, cols, axis=1), np.array_split(row_rec, cols, axis=1)):
+                loss.append(np.mean((chunk_orig - chunk_rec) ** 2))
+
+        return np.max(np.array(loss))
 
 class ImageFolder(Dataset):
     """Dataset class for image."""
@@ -230,7 +245,11 @@ def preprocess_images(
 
 def denormalize(img_batch: np.ndarray) -> list[np.ndarray]:
     """Denormalize image tensors to plot."""
-    imgs = img_batch
+
+    if len(img_batch.shape) != 4:
+        imgs = np.array([img_batch])
+    else:
+        imgs = img_batch
 
     # denormalize if the images are not latent vectors
     if not img_batch.shape[1] == 4:
