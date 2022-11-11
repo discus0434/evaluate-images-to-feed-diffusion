@@ -253,7 +253,7 @@ def denormalize(img_batch: np.ndarray) -> list[np.ndarray]:
 
     # denormalize if the images are not latent vectors
     if not img_batch.shape[1] == 4:
-        imgs = imgs / 2 + 0.5
+        imgs = imgs + 0.5
     # min-max normalization for latent vectors
     else:
         imgs = (imgs - imgs.min()) / (imgs.max() - imgs.min())
